@@ -3,7 +3,7 @@ const User = require("../models/user.schema");
 const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
-  const { fullName, password, email } = req.body;
+  const { fullName, password, email, mobile } = req.body;
   if (!fullName || !email || !password) {
     return res.status(402).json("Fill all the details");
   }
@@ -18,16 +18,19 @@ const register = async (req, res) => {
     const user = new User({
       fullName,
       email,
+      mobile,
       password: hashPassword,
     });
     const createdUser = await user.save();
+    const token = await jwt.generateToken(createdUser._id);
+
     // remove password in response
     const sanitizedUser = await User.findById(createdUser._id).select(
       "-password"
     );
     return res
       .status(200)
-      .json({ sanitizedUser, message: "successfully registered" });
+      .json({ sanitizedUser, message: "register success", token });
   } catch (error) {
     return res.status(401).json("Failed,Try again");
   }
@@ -58,5 +61,38 @@ const login = async (req, res) => {
       .json({ loggedInUser, token, message: "login successfully" });
   } catch (error) {}
 };
+const getUser = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    // console.log(token);
+    if (!jwt) {
+      return res.status(404).send({ error: "token not found" });
+    }
 
-module.exports = { register, login };
+    const userId = jwt.getUserIdByToken(token);
+    // console.log(userId);
+    const user = await User.findById(userId);
+    // console.log(user);
+
+    if (!user) {
+      throw new Error("user not found with id : ", userId);
+    }
+    // console.log(user);
+    return res.status(201).json(user);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+const getallUser = async (req, res) => {
+  try {
+    const user = await User.find();
+    // console.log(user);
+
+    // console.log(user);
+    return res.status(201).json(user);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
+module.exports = { register, login, getUser, getallUser };

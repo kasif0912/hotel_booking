@@ -8,7 +8,8 @@ const generateToken = (userID) => {
 
 const getUserIdByToken =  (token) => {
   const decodedToken =  jwt.verify(token, secrey_key);
-  return decodedToken.userId;
+  // console.log(decodedToken.userId);
+  return decodedToken.userID;
 };
 
 module.exports = { generateToken, getUserIdByToken };

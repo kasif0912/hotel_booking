@@ -18,6 +18,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    mobile: {
+      type: String,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
