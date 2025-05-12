@@ -77,7 +77,7 @@ const roomBooking = async (req, res) => {
 
 const getRoomBookingsById = async (req, res) => {
   const { userId } = req.body;
-  // console.log(userId);
+  console.log(userId); 
   try {
     const booking = await Bookings.find({ userId: userId });
     return res.status(200).json(booking);

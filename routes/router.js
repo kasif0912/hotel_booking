@@ -12,13 +12,15 @@ router.get("/api/getallusers", authController.getallUser);
 
 router.get("/api/getrooms", roomController.getAllRooms);
 router.get("/api/getroomById/:id", roomController.getRoomById);
+router.post("/api/addroom", roomController.addRoom);
+
+
 router.post(
-  "/api/getBookingByUserId/",
+  "/api/getBookingByUserId/",authenticate,
   roomBookingController.getRoomBookingsById
 );
 router.post("/api/cancelbooking", roomBookingController.cancelbooking);
 router.get("/api/getallbookings", roomBookingController.getallbookings);
-router.post("/api/addroom", roomController.addRoom);
 router.post("/api/create-checkout-session", roomBookingController.roomBooking);
 
 // router.post("/api/create-checkout-session", async (req, res) => {
